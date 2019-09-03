@@ -4,7 +4,7 @@
  Author      : martin
  Version     :
  Copyright   : Your copyright notice
- Description : Hello World in C, Ansi-style
+ Description : verifica que el entero este en el rango, Ansi-style
  ============================================================================
  */
 
@@ -14,6 +14,10 @@
 
 
 int main(void) {
-	saludarAlUsuario();
+	int resultado;
+	if(getInt(&resultado,"Edad?\n","Error\n",0,150,2)==0)
+	{
+		printf("El resultado es: %d",resultado);
+	}
 	return EXIT_SUCCESS;
 }

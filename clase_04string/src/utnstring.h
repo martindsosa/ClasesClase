@@ -2,12 +2,12 @@
  * utnstring.h
  *
  *  Created on: 29 ago. 2019
- *      Author: alumno
+ *      Author: Martin Damian Sosa
  */
-
-#ifndef UTNSTRING_H_
-#define UTNSTRING_H_
-
-
-
-#endif /* UTNSTRING_H_ */
+#define EXIT_ERROR -1
+int getString(char *resultado,
+			char mensaje[],
+			char mensajeError[],
+			int minimo,
+			int maximo,
+			int reintentos);
