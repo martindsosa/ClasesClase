@@ -10,17 +10,18 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdio_ext.h>
 #include <string.h>
 #define QTY_EMPLEADOS 8
 int imprimeArrayInt(int array[],int limite);
 int initArrayInt(int array[],int limite,int valor);
-/*int getArrayInt(	int array[],
+int getArrayInt(	int array[],
 					int limite,
 					char *mensaje,
 					char *mensajeError,
 					int minimo,
 					int maximo,
-					int reintentos);*/
+					int reintentos);
 int ordenarArrayInt(int array[],int limite);
 int maximoArrayInt(int array[],int limite,int *pResultado);
 int minimoArrayInt(int array[],int limite,int cantidaElementos,int *pResultado);
@@ -29,15 +30,13 @@ int minimoArrayInt(int array[],int limite,int cantidaElementos,int *pResultado);
 int main(void)
 {
 	int edadesEmpleados[QTY_EMPLEADOS]={5,77,10,100,500,70,3,2};
-	int resultado;
-	//if(initArrayInt(edadesEmpleados,QTY_EMPLEADOS,10) == 0)
-	//{
-	    maximoArrayInt(edadesEmpleados,QTY_EMPLEADOS,&resultado);
-	    printf("%d",resultado);
-		imprimeArrayInt(edadesEmpleados,QTY_EMPLEADOS);
+
+	if(initArrayInt(edadesEmpleados,QTY_EMPLEADOS,10) == 0)
+	{
+	    imprimeArrayInt(edadesEmpleados,QTY_EMPLEADOS);
 		ordenarArrayInt(edadesEmpleados,QTY_EMPLEADOS);
 		imprimeArrayInt(edadesEmpleados,QTY_EMPLEADOS);
-	//}
+	}
 	return EXIT_SUCCESS;
 }
 
@@ -107,22 +106,28 @@ int minimoArrayInt(int array[],int limite,int cantidaElementos,int *pResultado)
 int ordenarArrayInt(int array[],int limite)
 {
 	int j;
-	int aux;
-	int flagNoEstaOrdenado = 1;
-	while (flagNoEstaOrdenado==1)
+	int flagNoEstaOrdenado;
+	int bufferInt;
+	int retorno = -1;
+	if (array != NULL && limite > 0)
 	{
-		flagNoEstaOrdenado = 0;
-		for (j = 1; j < limite; j++)
+		retorno = 0;
+		do
 		{
-			if (array[j] > array[j - 1])
+			flagNoEstaOrdenado = 0;
+			for (j = 0; j < limite; j++)
 			{
-				aux = array[j];
-				array[j] = array[j - 1];
-				array[j - 1] = aux;
-				flagNoEstaOrdenado = 1;
+				if (array[j] > array[j + 1])
+				{
+					bufferInt = array[j];
+					array[j] = array[j + 1];
+					array[j + 1] = bufferInt;
+					flagNoEstaOrdenado = 1;
+				}
 			}
-		}
-	 }
+		}while(flagNoEstaOrdenado==1);
+	}
+	return retorno;
 }
 char getString (char *pResultado  ,
 				char *pMensaje,
@@ -148,10 +153,70 @@ char getString (char *pResultado  ,
 				retorno = 0;
 				break;
 			}
-			printf("%s",mensajeError);
+			printf("%s",pMensajeError);
 			reintentos--;
 
 		}while(reintentos >= 0);
 	}
+	return (retorno);
+}
+int getArrayInt(	int array[],
+					int limite,
+					char *pMensaje,
+					char *pMensajeError,
+					int minimo,
+					int maximo,
+					int reintentos)
+{
+	int i=0;
+	int buffer;
+	char respuesta = 'n';
+	int retorno = -1;
+	if(array != NULL && limite > 0)
+	{
+		do
+		{
+			if(getInt(	&buffer,
+						pMensaje,
+						pMensajeError,
+						minimo,
+						maximo,
+						reintentos) == 0)
+			{
+				array[i] = buffer;
+				i++;
+				limite--;
+			}
+			printf("Continuar? (s/n)");
+			__fpurge(stdin);
+			scanf("%c",&respuesta);
+		}while(respuesta == 's' && limite > 0);
+		retorno = i;
+	}
+	return retorno;
+}
+
+int getInt(	int *pResultado,
+			char *pMensaje,
+			char *pMensajeError,
+			int minimo,
+			int maximo,
+			int reintentos)
+{
+	int retorno = -1;
+	int buffer;
+	do
+	{
+		printf("%s",pMensaje);
+		__fpurge(stdin);
+		if(scanf("%d",&buffer)==1 && buffer >= minimo && buffer <= maximo)
+		{
+			*pResultado = buffer;
+			retorno = 0;
+			break;
+		}
+		printf("%s",pMensajeError);
+		reintentos--;
+	}while(reintentos >= 0);
 	return retorno;
 }
